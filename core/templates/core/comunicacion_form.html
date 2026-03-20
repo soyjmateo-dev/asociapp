@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between mb-4">
+        <h3>Nueva comunicación</h3>
+        <a href="/{{ slug }}/comunicaciones/" class="btn btn-outline-secondary">
+            Volver
+        </a>
+    </div>
+
+    <div class="card shadow-sm p-4">
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row g-3">
+
+                <div class="col-md-4">
+                    <label class="form-label">Fecha</label>
+                    {{ form.fecha }}
+                </div>
+
+                <div class="col-md-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <label class="form-label mb-1">Organismo</label>
+                        <button type="button" 
+                                class="btn btn-sm btn-outline-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalOrganismo">
+                            +
+                        </button>
+                    </div>
+                    {{ form.organismo }}
+                </div>
+
+                <div class="col-md-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <label class="form-label mb-1">Tipo</label>
+                        <button type="button"
+                                class="btn btn-sm btn-outline-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalTipo">
+                            +
+                        </button>
+                    </div>
+                    {{ form.tipo }}
+            
+                </div>
+
+                <div class="col-md-12">
+                    <label class="form-label">Asunto</label>
+                    {{ form.asunto }}
+                </div>
+
+                <div class="col-md-12">
+                    <label class="form-label">Descripción</label>
+                    {{ form.descripcion }}
+                </div>
+
+                <div class="col-md-12">
+                    <label class="form-label">Archivos adjuntos</label>
+
+                    <input type="file"
+                        id="archivosInput"
+                        multiple
+                        class="form-control">
+ 
+                    <div id="listaArchivos" class="mt-2"></div>
+                </div>
+
+            </div>
+
+            {% if comunicacion and comunicacion.archivos.all %}
+            <hr>
+            <h6>Archivos actuales</h6>
+
+            <ul class="list-group mb-3">
+                {% for archivo in comunicacion.archivos.all %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                        <a href="{{ archivo.archivo.url }}" target="_blank">
+                            {{ archivo.archivo.name|cut:"comunicaciones/" }}
+                        </a>
+
+                        <form method="post"
+                                action="{% url 'archivo_comunicacion_delete' slug=slug pk=archivo.id %}"
+                                style="margin:0;">
+                            {% csrf_token %}
+                            <button class="btn btn-sm btn-outline-danger"
+                                    onclick="return confirm('¿Eliminar este archivo?');">
+                                Eliminar
+                            </button>
+                        </form>
+
+                    </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            <div class="mt-4 text-end">
+                <button type="submit" class="btn btn-primary">
+                    Guardar
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+function crearOrganismo() {
+
+    const nombre = document.getElementById("nuevoOrganismoNombre").value;
+
+    fetch("{% url 'organismo_ajax_create' slug=slug %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: "nombre=" + encodeURIComponent(nombre)
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        if (data.id) {
+
+            const select = document.getElementById("id_organismo");
+
+            const option = document.createElement("option");
+            option.value = data.id;
+            option.text = data.nombre;
+            option.selected = true;
+
+            select.appendChild(option);
+
+            const modal = bootstrap.Modal.getInstance(
+                document.getElementById("modalOrganismo")
+            );
+            modal.hide();
+
+            document.getElementById("nuevoOrganismoNombre").value = "";
+
+        } else {
+            alert("Error al crear organismo");
+        }
+    });
+
+}
+
+function crearTipo() {
+
+    const nombre = document.getElementById("nuevoTipoNombre").value;
+
+    fetch("{% url 'tipo_comunicacion_ajax_create' slug=slug %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: "nombre=" + encodeURIComponent(nombre)
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        if (data.id) {
+
+            const select = document.getElementById("id_tipo");
+
+            const option = document.createElement("option");
+            option.value = data.id;
+            option.text = data.nombre;
+            option.selected = true;
+
+            select.appendChild(option);
+
+            const modal = bootstrap.Modal.getInstance(
+                document.getElementById("modalTipo")
+            );
+            modal.hide();
+
+            document.getElementById("nuevoTipoNombre").value = "";
+
+        } else {
+            alert("Error al crear tipo");
+        }
+    });
+}
+
+</script>
+
+<!-- MODAL ORGANISMO -->
+<div class="modal fade" id="modalOrganismo" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nuevo Organismo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="nuevoOrganismoNombre" class="form-control" placeholder="Nombre del organismo">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="crearOrganismo()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TIPO -->
+<div class="modal fade" id="modalTipo" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nuevo Tipo de Comunicación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="nuevoTipoNombre" class="form-control" placeholder="Nombre del tipo">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="crearTipo()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let archivosSeleccionados = [];
+
+const inputArchivos = document.getElementById("archivosInput");
+const lista = document.getElementById("listaArchivos");
+
+inputArchivos.addEventListener("change", function () {
+
+    for (let file of inputArchivos.files) {
+        archivosSeleccionados.push(file);
+    }
+
+    renderLista();
+});
+
+function renderLista() {
+    lista.innerHTML = "";
+
+    archivosSeleccionados.forEach((file, index) => {
+
+        const div = document.createElement("div");
+        div.className = "d-flex justify-content-between align-items-center border p-2 mb-1 rounded";
+
+        div.innerHTML = `
+            <span>${file.name}</span>
+            <button type="button"
+                    class="btn btn-sm btn-outline-danger"
+                    onclick="eliminarArchivo(${index})">
+                ✕
+            </button>
+        `;
+
+        lista.appendChild(div);
+    });
+}
+
+function eliminarArchivo(index) {
+    archivosSeleccionados.splice(index, 1);
+    renderLista();
+}
+
+document.querySelector("form").addEventListener("submit", function (e) {
+
+    const formData = new FormData(this);
+
+    archivosSeleccionados.forEach(file => {
+        formData.append("archivos", file);
+    });
+
+    e.preventDefault();
+
+    fetch(this.action, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: formData
+    }).then(response => {
+        window.location.href = response.url;
+    });
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+<div style="margin-bottom:16px;">
+    <a href="{% url 'admin:core_contacto_plantilla' %}"
+       class="button default">
+        📥 Descargar plantilla Excel
+    </a>
+</div>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="archivo" required>
+    <button type="submit" class="button default">
+        Importar contactos
+    </button>
+</form>
+
+<p>
+    <a href="{% url 'admin:app_list' opts.app_label %}">
+        ⬅ Volver
+    </a>
+</p>
+
+{% endblock %}

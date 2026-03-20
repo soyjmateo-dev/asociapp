@@ -1,0 +1,300 @@
+:root {
+    --primary: #166534;      /* Verde Olma */
+    --primary-soft: #dcfce7;
+    --secondary: #4ade80;
+
+    --bg-main: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-hover: #f1f5f9;
+
+    --text-main: #0f172a;
+    --text-soft: #475569;
+
+    --border: #e5e7eb;
+    --danger: #b91c1c;
+    --success: #166534;
+
+    --radius: 12px;
+}
+
+
+/* Fondo general */
+body {
+    background: var(--bg-main);
+    color: var(--text-main);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+
+/* Header */
+#header {
+    background: linear-gradient(
+        90deg,
+        var(--primary),
+        #14532d
+    );
+    border-bottom: none;
+}
+
+#header h1 a {
+    color: white;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+
+/* Título */
+#header h1 a {
+    color: white;
+}
+
+/* Módulos */
+.module {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    margin-bottom: 16px;
+}
+
+
+/* Botones */
+.button,
+input[type=submit],
+input[type=button] {
+    background: var(--primary);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    color: white;
+    font-weight: 500;
+}
+
+.button:hover {
+    background: #14532d;
+}
+
+/* Tablas Limpias */
+
+table {
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+thead th {
+    background: var(--primary-soft);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+tr:hover {
+    background: var(--bg-hover);
+}
+
+/* Estado OK */
+.estado-ok {
+    color: var(--success);
+    font-weight: 600;
+    position: relative;
+    padding-left: 16px;
+}
+
+.estado-ok::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    background-color: var(--success);
+    border-radius: 50%;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Estado BAD */
+.estado-bad {
+    color: var(--danger);
+    font-weight: 600;
+    position: relative;
+    padding-left: 16px;
+}
+
+.estado-bad::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    background-color: var(--danger);
+    border-radius: 50%;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Estados financieros */
+.estado-ok {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+    color: #166534;
+    background: #dcfce7;
+}
+
+.estado-bad {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+    color: #991b1b;
+    background: #fee2e2;
+}
+
+/* Tablas más limpias */
+#changelist table {
+    border-collapse: separate;
+    border-spacing: 0 6px;
+}
+
+#changelist table tbody tr {
+    background: #ffffff;
+    box-shadow: 0 1px 2px rgba(0,0,0,.04);
+    border-radius: 10px;
+}
+
+#changelist table tbody tr:hover {
+    background: #f9fafb;
+}
+
+#changelist table th {
+    background: #ecfdf5;
+    color: #065f46;
+    font-weight: 700;
+}
+
+/* Celdas */
+#changelist table td {
+    padding: 10px 12px;
+    vertical-align: middle;
+}
+
+/* ---- ICONO ACTIVO ---- */
+.field-activo img {
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,.15));
+}
+
+/* ---- BARRA DE ACCIONES ---- */
+.actions {
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 12px;
+}
+
+/* ─────────────────────────────
+   HOVER DE FILAS (Admin lists)
+   ───────────────────────────── */
+
+#result_list tbody tr:hover {
+    background-color: #f0fdf4;   /* verde muy suave */
+    transition: background-color 0.15s ease-in-out;
+}
+
+/* ───────── ACCIONES ADMIN (FORZADO) ───────── */
+
+.actions select,
+.actions select:focus {
+    border-radius: 10px !important;
+    padding: 6px 12px !important;
+    border: 1px solid #d1d5db !important;
+    background-color: #ffffff !important;
+    font-weight: 600 !important;
+    height: auto !important;
+}
+
+.actions button,
+.actions input[type="submit"] {
+    border-radius: 10px !important;
+    padding: 6px 16px !important;
+    border: none !important;
+    background-color: #16a34a !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+}
+
+.actions button:hover,
+.actions input[type="submit"]:hover {
+    background-color: #15803d !important;
+}
+
+
+/* Acciones peligrosas */
+.actions select option[value*="delete"] {
+    color: #b91c1c;
+    font-weight: 600;
+}
+
+/* ───────── BARRA SUPERIOR LISTADO ───────── */
+
+#changelist .actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #f9fafb;
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 16px;
+}
+
+#changelist .actions label {
+    font-weight: 600;
+    margin-right: 6px;
+}
+
+#changelist .actions span.action-counter {
+    margin-left: auto;
+    font-weight: 500;
+    color: #374151;
+}
+
+/* ───────── TABLA DE LISTADOS (SOCIOS, FAMILIAS, ETC) ───────── */
+
+#result_list {
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+#result_list tbody tr {
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    border-radius: 14px;
+    transition: all 0.2s ease;
+}
+
+#result_list tbody tr:hover {
+    transform: scale(1.005);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.10);
+}
+
+#result_list td,
+#result_list th {
+    padding: 12px 14px;
+}
+
+#result_list tbody tr td:first-child {
+    border-top-left-radius: 14px;
+    border-bottom-left-radius: 14px;
+}
+
+#result_list tbody tr td:last-child {
+    border-top-right-radius: 14px;
+    border-bottom-right-radius: 14px;
+}

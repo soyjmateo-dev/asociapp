@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pagos rápidos</title>
+<style>
+body{font-family:system-ui;background:#f9fafb;margin:0;padding:1rem}
+.card{background:#fff;border-radius:12px;padding:1rem;margin-bottom:1rem;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+a.btn{display:block;padding:1rem;border-radius:10px;background:#2563eb;color:#fff;text-decoration:none;font-weight:600}
+small{color:#6b7280}
+</style>
+</head>
+<body>
+
+<h1>💶 Pagos rápidos</h1>
+
+{% for a in actividades %}
+  <div class="card">
+    <h2>{{ a.nombre }}</h2>
+    <small>{{ a.fecha|date:"d/m/Y" }}</small><br><br>
+    <a class="btn" href="{% url 'evento_pagos_actividad' a.id %}">
+      Entrar
+    </a>
+  </div>
+{% empty %}
+  <p>No hay actividades</p>
+{% endfor %}
+
+</body>
+</html>

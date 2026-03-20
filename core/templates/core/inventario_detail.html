@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<div class="d-flex justify-content-between mb-4">
+
+<h3>{{ item.nombre }}</h3>
+
+<div>
+
+<a href="/{{ slug }}/inventario/"
+   class="btn btn-outline-secondary me-2">
+← Volver
+</a>
+
+<a href="/{{ slug }}/inventario/{{ item.id }}/editar/"
+   class="btn btn-primary me-2">
+Editar
+</a>
+
+<a href="/{{ slug }}/inventario/{{ item.id }}/eliminar/"
+   class="btn btn-outline-danger">
+Eliminar
+</a>
+
+</div>
+
+</div>
+
+<div class="card shadow-sm p-4">
+
+<p><strong>Categoría:</strong> {{ item.categoria }}</p>
+<p><strong>Ubicación:</strong> {{ item.ubicacion }}</p>
+<p><strong>Cantidad:</strong> {{ item.cantidad }}</p>
+<p><strong>Estado:</strong> {{ item.estado }}</p>
+<p><strong>Valor:</strong> {{ item.valor }} €</p>
+
+{% if item.descripcion %}
+<p><strong>Descripción:</strong> {{ item.descripcion }}</p>
+{% endif %}
+
+</div>
+
+
+{% if item.archivos.all %}
+
+<div class="card shadow-sm p-4 mt-3">
+
+<h5 class="mb-3">Archivos</h5>
+
+<div class="row">
+
+{% for a in item.archivos.all %}
+
+<div class="col-md-3 mb-3 text-center">
+
+{% if a.es_imagen %}
+
+<img src="{{ a.archivo.url }}"
+     class="img-fluid rounded border mb-2">
+
+{% else %}
+
+<a href="{{ a.archivo.url }}" target="_blank">
+📄 {{ a.archivo.name|cut:"inventario/" }}
+</a>
+
+{% endif %}
+
+<div>
+
+<a href="{% url 'archivo_inventario_delete' slug=slug pk=a.id %}"
+   class="btn btn-sm btn-outline-danger mt-1">
+Eliminar
+</a>
+
+</div>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+{% endblock %}

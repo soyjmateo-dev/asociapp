@@ -1,0 +1,15 @@
+/* FONDO GENERAL DEL ADMIN */
+body {
+    background-color: red !important;
+}
+
+
+/* CABECERA */
+#header {
+    background-color: #166534 !important;
+}
+
+/* TEXTO CABECERA */
+#header a, #header h1 {
+    color: white !important;
+}

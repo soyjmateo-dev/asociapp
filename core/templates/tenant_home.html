@@ -1,0 +1,198 @@
+
+{% extends "base.html" %}
+
+{% block title %}Panel{% endblock %}
+
+{% block content %}
+
+
+<h2 class="mb-4">Panel</h2>
+
+<!-- SOCIOS -->
+
+<h4 class="mb-3">Socios</h4>
+
+<div class="row g-4 mb-5">
+
+<div class="col-md-3">
+<div class="card shadow-sm text-center p-3">
+<small class="text-muted">Activos</small>
+<h3>{{ activos_count }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card shadow-sm text-center p-3">
+<small class="text-muted">Deudores</small>
+<h3 class="text-danger">{{ total_deudores }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card shadow-sm text-center p-3">
+<small class="text-muted">Al corriente</small>
+<h3 class="text-success">{{ total_al_corriente }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card shadow-sm text-center p-3">
+<small class="text-muted">Deuda total</small>
+<h3>{{ deuda_total }} €</h3>
+</div>
+</div>
+
+</div>
+
+
+<!-- FINANZAS -->
+
+<h4 class="mb-3">Resumen financiero</h4>
+
+<div class="row g-4 mb-5">
+
+<div class="col-md-3">
+<div class="card shadow-sm text-center p-3">
+<small class="text-muted">Cuotas</small>
+<h4 class="text-primary">{{ ingresos_cuotas }} €</h4>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card shadow-sm text-center p-3">
+<small class="text-muted">Actividades</small>
+<h4 class="text-info">{{ ingresos_actividades }} €</h4>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card shadow-sm text-center p-3">
+<small class="text-muted">Patrocinios</small>
+<h4 class="text-success">{{ ingresos_patrocinios }} €</h4>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card shadow-sm text-center p-3">
+<small class="text-muted">Gastos</small>
+<h4 class="text-danger">{{ gastos }} €</h4>
+</div>
+</div>
+
+</div>
+
+
+<!-- RESULTADO -->
+
+<div class="card shadow text-center mb-5
+{% if resultado >= 0 %}border-success{% else %}border-danger{% endif %}">
+<div class="card-body">
+
+<small class="text-muted">Resultado</small>
+
+<h2 class="{% if resultado >= 0 %}text-success{% else %}text-danger{% endif %}">
+{{ resultado }} €
+</h2>
+
+</div>
+</div>
+
+
+<!-- ACTIVIDADES -->
+
+<h4 class="mb-3">Actividades</h4>
+
+<div class="card shadow-sm mb-5">
+
+<table class="table mb-0">
+
+<thead class="table-light">
+<tr>
+<th>Actividad</th>
+<th>Fecha</th>
+<th>Plazas</th>
+<th></th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for actividad in actividades %}
+
+<tr>
+
+<td>{{ actividad.nombre }}</td>
+
+<td>{{ actividad.fecha }}</td>
+
+<td>
+
+{% if actividad.plazas_disponibles <= 0 %}
+
+<span class="badge bg-danger">
+Completa
+</span>
+
+{% elif actividad.plazas_disponibles <= 3 %}
+
+<span class="badge bg-warning text-dark">
+{{ actividad.plazas_ocupadas }} / {{ actividad.cupo_maximo }}
+</span>
+
+{% else %}
+
+<span class="badge bg-success">
+{{ actividad.plazas_ocupadas }} / {{ actividad.cupo_maximo }}
+</span>
+
+{% endif %}
+
+</td>
+
+<td class="text-end">
+
+<a href="/{{ slug }}/actividades/{{ actividad.id }}/"
+class="btn btn-sm btn-outline-primary">
+
+Ver
+
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+
+<!-- ACCIONES RAPIDAS -->
+
+<h4 class="mb-3">Acciones rápidas</h4>
+
+<div class="d-flex gap-2">
+
+<a href="/{{ slug }}/socios/nuevo/" class="btn btn-primary">
+<i class="bi bi-person-plus"></i> Nuevo socio
+</a>
+
+<a href="/{{ slug }}/pagos/nuevo/" class="btn btn-success">
+<i class="bi bi-cash"></i> Registrar pago
+</a>
+
+<a href="/{{ slug }}/actividades/" class="btn btn-outline-secondary">
+<i class="bi bi-person-check"></i> Inscribir a actividad
+</a>
+
+<a href="{% url 'informe_anual' slug=slug %}" class="btn btn-outline-dark">
+<i class="bi bi-bar-chart-line"></i> Resumen financiero
+</a>
+    
+</div>
+
+{% endblock %}

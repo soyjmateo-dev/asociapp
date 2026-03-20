@@ -1,0 +1,30 @@
+/* FONDO GENERAL */
+body {
+    background-color: #f0f7f0 !important;
+}
+
+/* CABECERA */
+#header {
+    background-color: #14532d !important;
+}
+
+/* TEXTO CABECERA */
+#header h1,
+#header h1 a {
+    color: #ffffff !important;
+}
+
+/* BOTONES PRINCIPALES */
+.button,
+input[type=submit],
+input[type=button] {
+    background-color: #166534 !important;
+    border-color: #166534 !important;
+    color: #ffffff !important;
+}
+
+/* HOVER */
+.button:hover,
+input[type=submit]:hover {
+    background-color: #15803d !important;
+}

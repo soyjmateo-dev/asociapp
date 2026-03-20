@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+<h2>Contacto</h2>
+
+<div>
+
+<a href="/{{ slug }}/contactos/"
+   class="btn btn-outline-secondary me-2">
+← Volver
+</a>
+
+<a href="{% url 'contacto_update' slug=slug pk=contacto.id %}"
+   class="btn btn-primary">
+Editar
+</a>
+
+</div>
+
+</div>
+
+
+<div class="card shadow-sm p-4 mb-4">
+
+<div class="row g-4">
+
+<div class="col-md-4">
+<label class="form-label">Tipo</label>
+<div class="form-control bg-light">
+{{ contacto.tipo }}
+</div>
+</div>
+
+<div class="col-md-4">
+<label class="form-label">Nombre</label>
+<div class="form-control bg-light">
+{{ contacto.nombre }}
+</div>
+</div>
+
+<div class="col-md-4">
+<label class="form-label">Apellidos</label>
+<div class="form-control bg-light">
+{{ contacto.apellidos|default:"—" }}
+</div>
+</div>
+
+<div class="col-md-6">
+<label class="form-label">Empresa</label>
+<div class="form-control bg-light">
+{{ contacto.empresa|default:"—" }}
+</div>
+</div>
+
+<div class="col-md-3">
+<label class="form-label">Teléfono</label>
+<div class="form-control bg-light">
+{{ contacto.telefono|default:"—" }}
+</div>
+</div>
+
+<div class="col-md-3">
+<label class="form-label">Email</label>
+<div class="form-control bg-light">
+{{ contacto.email|default:"—" }}
+</div>
+</div>
+
+<div class="col-md-12">
+<label class="form-label">Observaciones</label>
+<div class="form-control bg-light" style="min-height:80px;">
+{{ contacto.observaciones|default:"—" }}
+</div>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card shadow-sm p-4">
+
+<h5 class="mb-3">Archivos</h5>
+
+{% if contacto.archivos.all %}
+
+<ul class="list-group">
+
+{% for archivo in contacto.archivos.all %}
+
+<li class="list-group-item d-flex justify-content-between align-items-center">
+
+<span>
+{{ archivo.descripcion|default:archivo.archivo.name }}
+</span>
+
+<a href="{{ archivo.archivo.url }}"
+   target="_blank"
+   class="btn btn-sm btn-outline-primary">
+Abrir
+</a>
+
+</li>
+
+{% endfor %}
+
+</ul>
+
+{% else %}
+
+<p class="text-muted">No hay archivos adjuntos.</p>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

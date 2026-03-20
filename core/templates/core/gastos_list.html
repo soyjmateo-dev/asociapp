@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Gastos{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Gastos</h2>
+    <div>
+        <a href="/{{ slug }}/" class="btn btn-outline-secondary me-2">
+            ← Volver al panel
+        </a>
+        <a href="{% url 'excel_export' slug 'Gasto' %}" class="btn btn-success">
+            Exportar Excel
+        </a>
+        <a href="{% url 'gasto_create' slug=slug %}" class="btn btn-primary">
+            + Nuevo gasto
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-striped align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Concepto</th>
+                    <th>Actividad</th>
+                    <th>Método</th>
+                    <th>Importe</th>
+                    <th>Archivo</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for gasto in gastos %}
+                <tr>
+                    <td>{{ gasto.fecha }}</td>
+                    <td>{{ gasto.concepto }}</td>
+                    <td>
+                        {% if gasto.actividad %}
+                            {{ gasto.actividad.nombre }}
+                        {% else %}
+                            General
+                        {% endif %}
+                    </td>
+                    <td>{{ gasto.get_metodo_pago_display }}</td>
+                    <td class="text-danger fw-bold">
+                        - {{ gasto.importe }} €
+                    </td>
+                    <td>
+                        {% if gasto.archivo %}
+                            <a href="{{ gasto.archivo.url }}" target="_blank">
+                                📎 Ver
+                            </a>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form method="post" action="{% url 'gasto_delete' slug=slug pk=gasto.id %}">
+                            {% csrf_token %}
+                            <button class="btn btn-sm btn-outline-danger"
+                                onclick="return confirm('¿Eliminar este gasto?');">
+                                🗑
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">
+                        No hay gastos registrados.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

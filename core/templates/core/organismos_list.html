@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Organismos</h2>
+    <div>
+        <a href="/{{ slug }}/comunicaciones/" class="btn btn-outline-secondary me-2">
+            ← Volver a comunicaciones
+        </a>
+        <a href="{% url 'organismo_create' slug=slug %}" class="btn btn-primary">
+            + Nuevo organismo
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-striped align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Activo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for o in organismos %}
+                <tr>
+                    <td>{{ o.nombre }}</td>
+                    <td>
+                        {% if o.activo %}
+                            <span class="badge bg-success">Activo</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactivo</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2" class="text-center text-muted py-4">
+                        No hay organismos creados.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

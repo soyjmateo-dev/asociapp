@@ -1,0 +1,23 @@
+<h2>Eliminar socio</h2>
+
+<p>¿Seguro que quieres eliminar a <strong>{{ socio.nombre }}</strong>?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Sí, eliminar</button>
+</form>
+
+<br>
+<a href="/{{ slug }}/socios/">Cancelar</a>
+
+<form method="post">
+    {% csrf_token %}
+
+    <p>Escribe el nombre del socio para confirmar:</p>
+
+    <input type="text" name="confirmacion" class="form-control mb-3">
+
+    <button type="submit" class="btn btn-danger">
+        Confirmar eliminación
+    </button>
+</form>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inscritos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h6 class="text-muted mb-0">{{ request.organizacion.nombre }}</h6>
+            <h2 class="mb-0">Inscritos</h2>
+            <small class="text-muted">{{ actividad.nombre }}</small>
+        </div>
+
+        <a href="/{{ slug }}/actividades/" class="btn btn-outline-secondary">
+            ← Volver
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+
+            {% if inscripciones %}
+            <table class="table table-hover mb-0">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Socio</th>
+                        <th>Edad</th>
+                        <th>Importe</th>
+                        <th>Pagado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for inscripcion in inscripciones %}
+                    <tr>
+
+                        <td>
+                            {{ inscripcion.socio.nombre }}
+                            {{ inscripcion.socio.apellidos }}
+                        </td>
+
+                        <td>
+                            {{ inscripcion.socio.edad }}
+                        </td>
+
+                        <td>
+                            {{ inscripcion.importe_pagado }} €
+                        </td>
+
+                        <td>
+                            {% if inscripcion.pagado %}
+                                <span class="badge bg-success">Sí</span>
+                            {% else %}
+                                <span class="badge bg-secondary">No</span>
+                            {% endif %}
+                        </td>
+
+                        <td class="text-center">
+                            <a href="{% url 'inscripcion_delete' slug=slug inscripcion_id=inscripcion.id %}"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('¿Eliminar inscripción?');">
+                                🗑
+                            </a>
+                        </td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+            {% else %}
+                <div class="text-center text-muted py-5">
+                    No hay inscritos todavía.
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

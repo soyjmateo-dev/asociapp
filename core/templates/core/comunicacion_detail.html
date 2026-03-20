@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-end align-items-center mb-3">
+
+        <a href="{% url 'comunicaciones_list' slug=slug %}"
+           class="btn btn-outline-secondary me-2">
+            ← Volver
+        </a>
+
+        <a href="{% url 'comunicacion_update' slug=slug pk=comunicacion.id %}"
+           class="btn btn-outline-primary">
+            Editar
+        </a>
+
+    </div>
+
+<h3 class="mb-4">{{ comunicacion.asunto }}</h3>
+
+    <div class="card p-4 shadow-sm">
+
+        <p><strong>Fecha:</strong> {{ comunicacion.fecha }}</p>
+        <p><strong>Organismo:</strong> {{ comunicacion.organismo }}</p>
+        <p><strong>Tipo:</strong> {{ comunicacion.tipo }}</p>
+
+        <hr>
+
+        <p>{{ comunicacion.descripcion|linebreaks }}</p>
+
+        {% if comunicacion.archivos.all %}
+            <hr>
+            <h5>Archivos adjuntos</h5>
+
+            <ul class="list-group">
+                {% for archivo in comunicacion.archivos.all %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="{{ archivo.archivo.url }}" target="_blank">
+                            {{ archivo.archivo.name|cut:"comunicaciones/" }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

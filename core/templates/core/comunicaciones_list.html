@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Archivo institucional</h2>
+
+    <div>
+        <a href="/{{ slug }}/" class="btn btn-outline-secondary me-2">
+            ← Volver al panel
+        </a>
+
+        <a href="{% url 'comunicacion_create' slug=slug %}" class="btn btn-primary">
+            + Nueva comunicación
+        </a>
+    </div>
+</div>
+
+<!-- FILTROS -->
+<form method="get" class="row g-2 mb-4 align-items-end">
+
+<div class="col-md-4">
+<input type="text"
+       name="q"
+       value="{{ q }}"
+       class="form-control"
+       placeholder="Buscar...">
+</div>
+
+<div class="col-md-2">
+<select name="organismo" class="form-select">
+<option value="">Organismo</option>
+{% for o in organismos %}
+<option value="{{ o.id }}" {% if organismo == o.id|stringformat:"s" %}selected{% endif %}>
+{{ o.nombre }}
+</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="col-md-2">
+<select name="tipo" class="form-select">
+<option value="">Tipo</option>
+{% for t in tipos %}
+<option value="{{ t.id }}" {% if tipo == t.id|stringformat:"s" %}selected{% endif %}>
+{{ t.nombre }}
+</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="col-md-2">
+<select name="anio" class="form-select">
+<option value="">Año</option>
+{% for a in anios %}
+<option value="{{ a }}" {% if anio == a|stringformat:"s" %}selected{% endif %}>
+{{ a }}
+</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="col-md-1 d-grid">
+<button class="btn btn-outline-primary">
+🔎 Filtrar
+</button>
+</div>
+
+<div class="col-md-1 d-grid">
+<a href="/{{ slug }}/comunicaciones/" class="btn btn-outline-secondary">
+✕
+</a>
+</div>
+
+</form>
+
+
+{% if comunicaciones_por_año %}
+
+    {% for año, comunicaciones in comunicaciones_por_año.items %}
+
+        <h4 class="mt-5 mb-3">{{ año }}</h4>
+
+        {% for c in comunicaciones %}
+
+            <div class="card shadow-sm mb-3">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-start">
+
+                        <div>
+
+                            <small class="text-muted">
+                                {{ c.fecha|date:"d F Y" }}
+                            </small>
+
+                            <h5 class="mt-1 mb-1 fw-semibold">
+                                {{ c.asunto }}
+                            </h5>
+
+                            <div class="text-muted">
+                                {{ c.organismo }} · {{ c.tipo }}
+                            </div>
+
+                        </div>
+
+                        <!-- ACCIONES -->
+                        <div class="text-end">
+
+                            <a href="{% url 'comunicacion_detail' slug=slug pk=c.id %}"
+                               class="btn btn-sm btn-outline-secondary me-1">
+                                👁
+                            </a>
+
+                            <a href="{% url 'comunicacion_update' slug=slug pk=c.id %}"
+                               class="btn btn-sm btn-outline-primary">
+                                ✏️
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                    {% if c.descripcion %}
+                        <div class="mt-2 text-muted">
+                            {{ c.descripcion|truncatewords:25 }}
+                        </div>
+                    {% endif %}
+
+                    {% if c.archivos.count %}
+                        <div class="mt-3">
+
+                            <span class="badge bg-light text-dark border">
+                                📎 {{ c.archivos.count }} documento{{ c.archivos.count|pluralize }}
+                            </span>
+
+                        </div>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    {% endfor %}
+
+{% else %}
+
+    <div class="text-center text-muted py-5">
+        No hay resultados.
+    </div>
+
+{% endif %}
+
+{% endblock %}

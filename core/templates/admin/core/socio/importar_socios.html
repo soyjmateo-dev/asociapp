@@ -1,0 +1,39 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+<!-- Botón descargar plantilla -->
+<div style="margin-bottom:16px;">
+    <a href="{% url 'admin:core_socio_plantilla' %}"
+       class="button default"
+       style="padding:6px 12px;">
+        📥 Descargar plantilla Excel
+    </a>
+</div>
+
+<p class="help">
+    Descarga la plantilla oficial y rellénala antes de importar para evitar errores de formato.
+</p>
+
+<!-- Formulario de importación -->
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <p>
+        <input type="file" name="archivo" required>
+    </p>
+    <input type="submit" value="Importar" class="button default">
+</form>
+
+<p style="margin-top:20px;">
+    <a href="{% url 'admin:app_list' opts.app_label %}">
+        ⬅ Volver
+    </a>
+</p>
+{% endblock %}
+
+
+
+
+

@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+   <h2>Inventario</h2>
+
+   <div>
+   <a href="/{{ slug }}/" class="btn btn-outline-secondary me-2">
+         ← Volver al panel
+   </a>
+   <a href="{% url 'excel_export' slug 'ItemInventario' %}" class="btn btn-success">
+        Exportar Excel
+   </a>
+   <a href="{% url 'inventario_create' slug=slug %}"
+      class="btn btn-primary">
+      + Nuevo artículo
+   </a>
+
+   </div>
+
+</div>
+
+<form method="get" class="row g-2 mb-3">
+
+<div class="col-md-6">
+<input type="text"
+       name="q"
+       class="form-control"
+       placeholder="Buscar artículo, ubicación..."
+       value="{{ request.GET.q }}">
+</div>
+
+<div class="col-md-3">
+
+<select name="categoria" class="form-select">
+
+<option value="">Todas las categorías</option>
+
+{% for c in categorias %}
+<option value="{{ c.id }}"
+{% if request.GET.categoria == c.id|stringformat:"s" %}selected{% endif %}>
+{{ c.nombre }}
+</option>
+{% endfor %}
+
+</select>
+
+</div>
+
+<div class="col-md-3">
+
+<button class="btn btn-outline-primary w-100">
+🔎 Buscar
+</button>
+
+</div>
+
+</form>
+
+<div class="card shadow-sm">
+
+<div class="table-responsive">
+
+<table class="table table-striped align-middle mb-0 table-hover">
+
+<thead class="table-light">
+<tr>
+<th>Artículo</th>
+<th>Categoría</th>
+<th>Ubicación</th>
+<th>Cantidad</th>
+<th>Estado</th>
+<th style="width:120px;" class="text-center">Acciones</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for item in items %}
+
+<tr>
+
+<!-- ARTÍCULO (clicable) -->
+<td>
+
+<a href="{% url 'inventario_detail' slug=slug pk=item.id %}"
+   class="fw-semibold text-decoration-none">
+   {{ item.nombre }}
+</a>
+
+{% if item.archivos.count %}
+
+<span class="ms-2 text-muted">
+
+{% for a in item.archivos.all %}
+
+{% if a.es_imagen %}
+📷
+{% else %}
+📄
+{% endif %}
+
+{% endfor %}
+
+</span>
+
+{% endif %}
+
+</td>
+
+<!-- CATEGORÍA -->
+<td>
+{{ item.categoria|default:"—" }}
+</td>
+
+<!-- UBICACIÓN -->
+<td>
+{{ item.ubicacion|default:"—" }}
+</td>
+
+<!-- CANTIDAD -->
+<td>
+{{ item.cantidad }}
+</td>
+
+<!-- ESTADO -->
+<td>
+{{ item.estado }}
+</td>
+
+<!-- ACCIONES -->
+<td class="text-center">
+
+<a href="{% url 'inventario_detail' slug=slug pk=item.id %}"
+   class="btn btn-sm btn-outline-secondary">
+   👁
+</a>
+
+<a href="{% url 'inventario_update' slug=slug pk=item.id %}"
+   class="btn btn-sm btn-outline-primary">
+   ✏️
+</a>
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="6" class="text-center text-muted py-4">
+No hay artículos en el inventario
+</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between mb-4">
+
+        <h3>
+            {% if contacto %}
+                Editar contacto
+            {% else %}
+                Nuevo contacto
+            {% endif %}
+        </h3>
+
+        <a href="/{{ slug }}/contactos/" class="btn btn-outline-secondary">
+            ← Volver
+        </a>
+
+    </div>
+
+    <div class="card shadow-sm p-4">
+
+        <form method="post" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <div class="row g-3">
+
+                <div class="col-md-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <label class="form-label mb-1">Tipo</label>
+
+                        <button type="button"
+                            class="btn btn-sm btn-outline-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalTipoContacto">
+                          +
+                        </button>
+                    </div>
+
+                    {{ form.tipo }}
+
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Nombre</label>
+                    {{ form.nombre }}
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Apellidos</label>
+                    {{ form.apellidos }}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Empresa</label>
+                    {{ form.empresa }}
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Teléfono</label>
+                    {{ form.telefono }}
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Email</label>
+                    {{ form.email }}
+                </div>
+
+                <div class="col-md-12">
+                    <label class="form-label">Observaciones</label>
+                    {{ form.observaciones }}
+                </div>
+
+            </div>
+
+
+            <div class="col-md-12 mt-3">
+                <label class="form-label">Archivos</label>
+
+                <input type="file"
+                    name="archivos"
+                    class="form-control"
+                    multiple>
+            </div>
+
+
+            {% if contacto and contacto.archivos.all %}
+
+            <div class="mt-4">
+
+                <label class="form-label">Archivos actuales</label>
+
+                <ul class="list-group">
+
+                    {% for archivo in contacto.archivos.all %}
+
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                        <span>
+                            {{ archivo.archivo.name|cut:"contactos/" }}
+                        </span>
+
+                        <div>
+
+                            <a href="{{ archivo.archivo.url }}"
+                               target="_blank"
+                               class="btn btn-sm btn-outline-secondary me-2">
+                               Abrir
+                            </a>
+
+                            <a href="{% url 'archivo_contacto_delete' slug=slug pk=archivo.id %}"
+                               class="btn btn-sm btn-outline-danger">
+                               Eliminar
+                            </a>
+
+                        </div>
+
+                    </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+            {% endif %}
+
+
+            <div class="mt-4 text-end">
+
+                <button type="submit" class="btn btn-primary">
+                    Guardar
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function crearTipoContacto(){
+
+    const nombre = document.getElementById("nuevoTipoContacto").value;
+
+    fetch("/{{ slug }}/tipos-contacto/ajax/create/", {
+
+        method: "POST",
+
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+
+        body: "nombre=" + encodeURIComponent(nombre)
+
+    })
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        if(data.id){
+
+            const select = document.getElementById("id_tipo");
+
+            const option = document.createElement("option");
+
+            option.value = data.id;
+            option.text = data.nombre;
+            option.selected = true;
+
+            select.appendChild(option);
+
+            const modal = bootstrap.Modal.getInstance(
+                document.getElementById("modalTipoContacto")
+            );
+
+            modal.hide();
+
+            document.getElementById("nuevoTipoContacto").value = "";
+
+        }
+
+    });
+
+}
+
+</script>
+
+
+<!-- MODAL TIPO CONTACTO -->
+<div class="modal fade" id="modalTipoContacto" tabindex="-1">
+
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Nuevo tipo de contacto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <input type="text"
+               id="nuevoTipoContacto"
+               class="form-control"
+               placeholder="Nombre del tipo">
+      </div>
+
+      <div class="modal-footer">
+
+        <button type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal">
+            Cancelar
+        </button>
+
+        <button type="button"
+                class="btn btn-primary"
+                onclick="crearTipoContacto()">
+            Guardar
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+{% endblock %}

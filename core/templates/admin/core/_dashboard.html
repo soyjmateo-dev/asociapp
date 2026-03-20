@@ -1,0 +1,15 @@
+<div class="resumen-container">
+  {% for card in cards %}
+    <div class="resumen-card card-{{ card.color|default:'info' }}">
+      <h3>
+        {% if card.icon %}
+          {{ card.icon }}
+        {% endif %}
+        {{ card.label }}
+      </h3>
+      <div class="numero">
+        {{ card.value }}
+      </div>
+    </div>
+  {% endfor %}
+</div>

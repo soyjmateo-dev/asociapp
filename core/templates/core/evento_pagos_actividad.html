@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ actividad.nombre }}</title>
+<style>
+body{font-family:system-ui;background:#f9fafb;margin:0;padding:1rem}
+.card{background:#fff;border-radius:12px;padding:1rem;margin-bottom:.75rem;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.estado-ok{color:#166534;font-weight:700}
+.estado-no{color:#b91c1c;font-weight:700}
+.btn{display:inline-block;margin-top:.5rem;padding:.6rem 1rem;border-radius:10px;background:#16a34a;color:#fff;font-weight:700}
+.btn-disabled{background:#9ca3af}
+</style>
+</head>
+<body>
+
+<h1>{{ actividad.nombre }}</h1>
+<p>{{ actividad.fecha|date:"d/m/Y" }}</p>
+
+{% for ins in inscripciones %}
+  <div class="card">
+    <strong>{{ ins.socio }}</strong><br>
+    {% if ins.pagado %}
+      <span class="estado-ok">🟢 Pagado</span>
+      <div class="btn btn-disabled">Pagado</div>
+    {% else %}
+      <span class="estado-no">🔴 Pendiente</span>
+      <a class="btn" href="/evento/pagar/{{ ins.id }}/">PAGAR</a>
+    {% endif %}
+
+  </div>
+{% empty %}
+  <p>No hay inscritos</p>
+{% endfor %}
+
+</body>
+</html>

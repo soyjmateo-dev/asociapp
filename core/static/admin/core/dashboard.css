@@ -1,0 +1,31 @@
+.resumen-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin: 25px 0 35px 0;
+}
+
+.resumen-card {
+  min-width: 320px;
+  padding: 34px 38px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+  border-top: 6px solid #16a34a;
+  background-color: #fff7ed;
+}
+
+.resumen-card h3 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.resumen-card .numero {
+  margin-top: 18px;
+  font-size: 66px;
+  font-weight: 800;
+  line-height: 1;
+  color: #166534;
+}

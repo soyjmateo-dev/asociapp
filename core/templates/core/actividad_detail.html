@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}Actividad{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h2 class="mb-0">{{ actividad.nombre }}</h2>
+        <small class="text-muted">{{ actividad.fecha }}</small>
+    </div>
+
+    <a href="/{{ slug }}/actividades/" class="btn btn-outline-secondary">
+        ← Volver
+    </a>
+
+</div>
+
+
+<!-- RESUMEN FINANCIERO -->
+
+<div class="row mb-4">
+
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center">
+            <div class="card-body">
+                <small class="text-muted">Ingresos</small>
+                <h5 class="text-success mb-0">
+                    + {{ ingresos }} €
+                </h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center">
+            <div class="card-body">
+                <small class="text-muted">Patrocinios</small>
+                <h5 class="text-success mb-0">
+                    + {{ patrocinios }} €
+                </h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center">
+            <div class="card-body">
+                <small class="text-muted">Gastos</small>
+                <h5 class="text-danger mb-0">
+                    - {{ gastos }} €
+                </h5>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm text-center border-2 {% if resultado >= 0 %}border-success{% else %}border-danger{% endif %}">
+            <div class="card-body">
+                <small class="text-muted">Resultado</small>
+                <h5 class="{% if resultado >= 0 %}text-success{% else %}text-danger{% endif %} mb-0">
+                    {{ resultado }} €
+                </h5>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- INSCRITOS -->
+
+<div class="card shadow-sm">
+
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+
+        <h5 class="mb-0">
+            Inscritos ({{ inscripciones.count }})
+        </h5>
+
+        <a href="{% url 'actividad_lista' slug=slug pk=actividad.id %}"
+            class="btn btn-outline-success btn-sm">
+           📋 Lista de asistencia
+        </a>
+        
+        <a href="{% url 'inscripcion_create' slug=slug actividad_id=actividad.id %}"
+           class="btn btn-sm btn-primary">
+            + Inscribir socio
+        </a>
+
+    </div>
+
+    <div class="card-body p-0">
+
+        {% if inscripciones %}
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0 table-striped">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Socio</th>
+                        <th>Edad</th>
+                        <th>Importe</th>
+                        <th>Pagado</th>
+                        <th style="width:80px;" class="text-center"></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for inscripcion in inscripciones %}
+
+                    <tr>
+
+                        <td>
+                            {{ inscripcion.socio.nombre }}
+                            {{ inscripcion.socio.apellidos }}
+                        </td>
+
+                        <td>
+                            {{ inscripcion.socio.edad }}
+                        </td>
+
+                        <td>
+                            {{ inscripcion.importe_pagado }} €
+                        </td>
+
+                        <td>
+
+                            {% if inscripcion.pagado %}
+                                <span class="badge bg-success">
+                                    Pagado
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary">
+                                    Pendiente
+                                </span>
+                            {% endif %}
+
+                        </td>
+
+                        <td class="text-center">
+
+                            <a href="{% url 'inscripcion_delete' slug=slug inscripcion_id=inscripcion.id %}"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('¿Eliminar inscripción?');">
+                                🗑
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="text-center text-muted py-5">
+            No hay inscritos todavía.
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

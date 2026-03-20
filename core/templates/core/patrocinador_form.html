@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between mb-4">
+        <h3>Patrocinador</h3>
+        <a href="/{{ slug }}/patrocinadores/" class="btn btn-outline-secondary">
+            Volver
+        </a>
+    </div>
+
+    <div class="card shadow-sm p-4">
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row g-4">
+
+                <div class="col-md-6">
+                    <label class="form-label">Empresa</label>
+                    {{ form.empresa }}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Actividad</label>
+                    {{ form.actividad }}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Contacto</label>
+                    {{ form.nombre_contacto }}
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Email</label>
+                    {{ form.email }}
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Teléfono</label>
+                    {{ form.telefono }}
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Aportación</label>
+                    {{ form.aportacion }}
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Año</label>
+                    {{ form.año }}
+                </div>
+
+                <!-- LOGOTIPO -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Logotipo</label>
+
+                    {% if form.instance.logotipo %}
+                        <div class="bg-light border rounded p-2 mb-3">
+                            <div class="small text-muted">
+                                {{ form.instance.logotipo.name|cut:"patrocinadores/" }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <label class="form-label small text-muted">Modificar</label>
+                    <input type="file"
+                        name="logotipo"
+                        class="form-control">
+
+                    {% if form.instance.logotipo %}
+                        <div class="form-check mt-2">
+                            <input type="checkbox"
+                                name="logotipo-clear"
+                                id="logotipo-clear"
+                                class="form-check-input">
+                            <label class="form-check-label small text-muted" for="logotipo-clear">
+                                Eliminar logotipo
+                            </label>
+                        </div>
+                    {% endif %}
+                </div>
+
+
+                <!-- DOCUMENTO -->
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Documento adicional</label>
+
+                    {% if form.instance.documento %}
+                        <div class="bg-light border rounded p-2 mb-3">
+                            <div class="small text-muted">
+                                {{ form.instance.documento.name|cut:"patrocinadores/documentos/" }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <label class="form-label small text-muted">Modificar</label>
+                    <input type="file"
+                        name="documento"
+                        class="form-control">
+
+                    {% if form.instance.documento %}
+                        <div class="form-check mt-2">
+                            <input type="checkbox"
+                                name="documento-clear"
+                                id="documento-clear"
+                                class="form-check-input">
+                            <label class="form-check-label small text-muted" for="documento-clear">
+                                Eliminar documento
+                            </label>
+                        </div>
+                    {% endif %}
+    </div>
+
+                <div class="col-md-12">
+                    <label class="form-label">Observaciones</label>
+                    {{ form.observaciones }}
+                </div>
+
+            </div>
+
+            <div class="mt-4 text-end">
+                <button type="submit" class="btn btn-primary">
+                    Guardar
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

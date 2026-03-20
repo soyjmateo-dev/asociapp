@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Patrocinadores{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Patrocinadores</h2>
+    <div>
+        <a href="/{{ slug }}/" class="btn btn-outline-secondary me-2">
+            ← Volver al panel
+        </a>
+        <a href="{% url 'patrocinador_create' slug=slug %}" class="btn btn-primary">
+            + Nuevo patrocinador
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-striped align-middle mb-0 table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Empresa</th>
+                    <th>Actividad</th>
+                    <th>Año</th>
+                    <th>Aportación</th>
+                    <th>Archivos</th>
+                    <th style="width:120px;" class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in patrocinadores %}
+                <tr>
+
+                    <!-- EMPRESA (clicable) -->
+                    <td>
+                        <a href="{% url 'patrocinador_detail' slug=slug pk=p.id %}"
+                           class="fw-semibold text-decoration-none">
+                            {{ p.empresa }}
+                        </a>
+                    </td>
+
+                    <!-- ACTIVIDAD -->
+                    <td>
+                        {% if p.actividad %}
+                            {{ p.actividad.nombre }}
+                        {% else %}
+                            General
+                        {% endif %}
+                    </td>
+
+                    <!-- AÑO -->
+                    <td>{{ p.año }}</td>
+
+                    <!-- APORTACIÓN -->
+                    <td class="text-success fw-bold">
+                        + {{ p.aportacion }} €
+                    </td>
+
+                    <!-- ARCHIVOS -->
+                    <td>
+                        {% if p.logotipo %}
+                            <span class="badge bg-primary me-1">Logo</span>
+                        {% endif %}
+                        {% if p.documento %}
+                            <span class="badge bg-dark">Doc</span>
+                        {% endif %}
+                        {% if not p.logotipo and not p.documento %}
+                            -
+                        {% endif %}
+                    </td>
+
+                    <!-- ACCIONES -->
+                    <td class="text-center">
+                        <a href="{% url 'patrocinador_detail' slug=slug pk=p.id %}"
+                           class="btn btn-sm btn-outline-secondary">
+                            👁
+                        </a>
+
+                        <a href="{% url 'patrocinador_update' slug=slug pk=p.id %}"
+                           class="btn btn-sm btn-outline-primary">
+                            ✏️
+                        </a>
+                    </td>
+
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted py-4">
+                        No hay patrocinadores registrados.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

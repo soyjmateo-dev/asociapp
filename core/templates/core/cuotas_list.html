@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}Cuotas{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+<div class="mb-4">
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+{{ message }}
+<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endfor %}
+</div>
+{% endif %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+<h2>Cuotas</h2>
+
+<div>
+
+<a href="/{{ slug }}/" class="btn btn-outline-secondary me-2">
+← Volver al panel
+</a>
+
+<a href="{% url 'cuota_create' slug=slug %}" class="btn btn-primary">
++ Nueva cuota
+</a>
+
+</div>
+
+</div>
+
+
+<div class="card shadow-sm">
+
+<div class="table-responsive">
+
+{% if cuotas %}
+
+<table class="table table-striped table-hover align-middle mb-0">
+
+<thead class="table-light">
+
+<tr>
+
+<th>Nombre</th>
+<th>Año</th>
+<th>Tipo</th>
+<th>Estado</th>
+<th>Vencimiento</th>
+<th style="width:180px;" class="text-center">Acciones</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for cuota in cuotas %}
+
+<tr>
+
+<td>
+
+<a href="{% url 'cuota_socios_list' slug=slug cuota_id=cuota.id %}"
+class="fw-semibold text-decoration-none">
+
+{{ cuota.nombre }}
+
+</a>
+
+</td>
+
+<td>
+{{ cuota.año }}
+</td>
+
+<td>
+
+{% if cuota.tipo == "anual" %}
+<span class="badge bg-primary">Anual</span>
+{% else %}
+<span class="badge bg-info text-dark">Extraordinaria</span>
+{% endif %}
+
+</td>
+
+<td>
+
+{% if cuota.estado == "activa" %}
+<span class="badge bg-success">Activa</span>
+
+{% elif cuota.estado == "borrador" %}
+<span class="badge bg-secondary">Borrador</span>
+
+{% else %}
+<span class="badge bg-dark">Cerrada</span>
+{% endif %}
+
+</td>
+
+<td>
+{{ cuota.fecha_vencimiento|date:"d/m/Y" }}
+</td>
+
+<td class="text-center">
+
+{% if cuota.estado == "borrador" %}
+
+<a href="{% url 'cuota_activar' slug=slug cuota_id=cuota.id %}"
+class="btn btn-sm btn-outline-success me-1">
+⚡
+</a>
+
+<a href="/{{ slug }}/cuotas/{{ cuota.id }}/eliminar/"
+class="btn btn-sm btn-outline-danger me-1">
+🗑
+</a>
+
+{% endif %}
+
+<a href="{% url 'cuota_socios_list' slug=slug cuota_id=cuota.id %}"
+class="btn btn-sm btn-outline-secondary me-1">
+👁
+</a>
+
+<a href="/{{ slug }}/cuotas/{{ cuota.id }}/editar/"
+class="btn btn-sm btn-outline-primary">
+✏️
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+{% else %}
+
+<div class="text-center text-muted py-5">
+No hay cuotas creadas todavía.
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+{% endblock %}

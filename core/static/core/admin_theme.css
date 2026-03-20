@@ -1,0 +1,39 @@
+/* ───────── PALETAS ───────── */
+
+body.theme-green {
+    --primary: #166534;
+    --secondary: #84cc16;
+    --bg: #f0fdf4;
+}
+
+body.theme-blue {
+    --primary: #1e40af;
+    --secondary: #60a5fa;
+    --bg: #eff6ff;
+}
+
+body.theme-amber {
+    --primary: #b45309;
+    --secondary: #fbbf24;
+    --bg: #fffbeb;
+}
+
+/* ───────── APLICACIÓN REAL ───────── */
+
+body {
+    background-color: var(--bg);
+}
+
+#header {
+    background-color: var(--primary);
+}
+
+.module h2 {
+    background-color: var(--secondary);
+    color: #000;
+}
+
+.button.default {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}

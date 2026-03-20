@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Pagos{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Pagos</h2>
+
+    <div class="d-flex gap-2">
+        <a href="/{{ slug }}/" class="btn btn-outline-secondary">
+            ← Volver al panel
+        </a>
+        <a href="{% url 'excel_export' slug 'Pago' %}" class="btn btn-success">
+            Exportar Excel
+        </a>
+        <a href="/{{ slug }}/pagos/nuevo/" class="btn btn-primary">
+            + Nuevo pago
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+
+        {% if pagos %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 table-striped">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Socio</th>
+                        <th>Concepto</th>
+                        <th>Método</th>
+                        <th class="text-end">Importe</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for pago in pagos %}
+                    <tr>
+                        <td>{{ pago.fecha }}</td>
+
+                        <td>
+                            {% if pago.socio %}
+                                {{ pago.socio.nombre }} {{ pago.socio.apellidos }}
+                            {% elif pago.familia %}
+                                Familia {{ pago.familia }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if pago.cuota %}
+                                Cuota {{ pago.cuota.nombre }}
+                            {% elif pago.inscripcion %}
+                                Inscripción {{ pago.inscripcion.actividad.nombre }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <span class="badge bg-secondary">
+                                {{ pago.metodo|capfirst }}
+                            </span>
+                        </td>
+
+                        <td class="text-end fw-semibold">
+                            {{ pago.importe }} €
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+        {% else %}
+            <div class="text-center text-muted py-5">
+                No hay pagos registrados todavía.
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}

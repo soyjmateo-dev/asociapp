@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<h2 class="mb-4">Importar socios desde Excel</h2>
+
+<div class="card shadow-sm mb-4">
+<div class="card-body">
+
+<h5>1️⃣ Descargar plantilla</h5>
+
+<p>
+Descarga la plantilla oficial, rellénala y vuelve a subirla para importar los socios.
+</p>
+
+<a href="{% url 'plantilla_socios' slug %}" class="btn btn-outline-primary">
+Descargar plantilla Excel
+</a>
+
+</div>
+</div>
+
+
+<div class="card shadow-sm">
+<div class="card-body">
+
+<h5>2️⃣ Subir archivo Excel</h5>
+
+<form method="post"
+      action="{% url 'importar_socios_excel' slug %}"
+      enctype="multipart/form-data">
+
+{% csrf_token %}
+
+<div class="mb-3">
+
+<input type="file"
+       name="archivo"
+       class="form-control"
+       accept=".xlsx"
+       required>
+
+</div>
+
+<button class="btn btn-success">
+Importar socios
+</button>
+
+</form>
+
+</div>
+</div>
+
+</div>
+
+{% endblock %}

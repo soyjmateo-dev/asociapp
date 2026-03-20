@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ socio }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont;
+            margin: 0;
+            padding: 1rem;
+            background: #f9fafb;
+            color: #111827;
+        }
+        h1, h2 {
+            margin-top: 1.5rem;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,.06);
+        }
+        .estado-ok {
+            color: #166534;
+            font-weight: bold;
+        }
+        .estado-debe {
+            color: #b91c1c;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        th, td {
+            padding: 0.4rem;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+        }
+        th {
+            background: #f3f4f6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>{{ socio.nombre }} {{ socio.apellidos }}</h1>
+
+    {% if socio.familia %}
+        <p><strong>Familia:</strong> {{ socio.familia.nombre }}</p>
+    {% endif %}
+
+    {% if total_pendiente > 0 %}
+        <p class="estado-debe">🔴 Debe {{ total_pendiente }} €</p>
+    {% else %}
+        <p class="estado-ok">🟢 Al día</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h2>Cuotas</h2>
+    <table>
+        <tr>
+            <th>Cuota</th>
+            <th>Importe</th>
+            <th>Estado</th>
+        </tr>
+        {% for c in cuotas %}
+        <tr>
+            <td>{{ c.cuota.nombre }}</td>
+            <td>{{ c.importe }} €</td>
+            <td>{{ "Pagada" if c.pagada else "Pendiente" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3">No hay cuotas</td></tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div class="card">
+    <h2>Actividades</h2>
+    <table>
+        <tr>
+            <th>Actividad</th>
+            <th>Fecha</th>
+            <th>Pagado</th>
+        </tr>
+        {% for i in inscripciones %}
+        <tr>
+            <td>{{ i.actividad.nombre }}</td>
+            <td>{{ i.actividad.fecha|date:"d/m/Y" }}</td>
+            <td>{{ "Sí" if i.pagado else "No" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3">No hay actividades</td></tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div class="card">
+    <h2>Pagos</h2>
+    <table>
+        <tr>
+            <th>Fecha</th>
+            <th>Importe</th>
+            <th>Método</th>
+        </tr>
+        {% for p in pagos %}
+        <tr>
+            <td>{{ p.fecha|date:"d/m/Y" }}</td>
+            <td>{{ p.importe }} €</td>
+            <td>{{ p.get_metodo_display }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3">No hay pagos</td></tr>
+        {% endfor %}
+    </table>
+</div>
+
+</body>
+</html>

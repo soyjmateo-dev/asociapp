@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial de {{ socio }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            background: #f3f4f6;
+            color: #111827;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 16px;
+        }
+
+        /* ───── CABECERA ───── */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 6px rgba(0,0,0,.08);
+        }
+
+        .nombre {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .familia {
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        .estado {
+            margin-top: 12px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .ok {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .pendiente {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .resumen {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .resumen div {
+            background: #f9fafb;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .resumen span {
+            display: block;
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .resumen strong {
+            font-size: 1.2rem;
+        }
+
+        /* ───── SECCIONES ───── */
+        h2 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .item {
+            border-top: 1px solid #e5e7eb;
+            padding: 12px 0;
+        }
+
+        .item:first-child {
+            border-top: none;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-ok {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-pendiente {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .small {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- CABECERA -->
+    <div class="card">
+        <div class="nombre">{{ socio }}</div>
+        {% if socio.familia %}
+            <div class="familia">Familia: {{ socio.familia.nombre }}</div>
+        {% endif %}
+
+        <div class="estado {% if estado == 'al_dia' %}ok{% else %}pendiente{% endif %}">
+            {% if estado == 'al_dia' %}
+                🟢 Al día
+            {% else %}
+                🔴 Pendiente de pago
+            {% endif %}
+        </div>
+
+        <div class="resumen">
+            <div>
+                <span>Total pagado</span>
+                <strong>{{ total_pagado }} €</strong>
+            </div>
+            <div>
+                <span>Pendiente</span>
+                <strong>{{ total_pendiente }} €</strong>
+            </div>
+            <div>
+                <span>Actividades</span>
+                <strong>{{ inscripciones.count }}</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACTIVIDADES -->
+    <div class="card">
+        <h2>📌 Actividades</h2>
+
+        {% for ins in inscripciones %}
+            <div class="item">
+                <strong>{{ ins.actividad.nombre }}</strong><br>
+                <span class="small">
+                    {{ ins.actividad.fecha|date:"d/m/Y" }}
+                </span><br>
+
+                {% if ins.pagado %}
+                    <span class="badge badge-ok">Pagado</span>
+                    <span class="small">{{ ins.importe_pagado }} €</span>
+                {% else %}
+                    <span class="badge badge-pendiente">Pendiente</span>
+                {% endif %}
+            </div>
+        {% empty %}
+            <div class="small">No hay actividades registradas.</div>
+        {% endfor %}
+    </div>
+
+    <!-- CUOTAS -->
+    <div class="card">
+        <h2>🧾 Cuotas</h2>
+
+        {% for cuota in cuotas %}
+            <div class="item">
+                <strong>{{ cuota.cuota.nombre }}</strong><br>
+                {% if cuota.pagada %}
+                    <span class="badge badge-ok">Pagada</span>
+                    <span class="small">{{ cuota.importe }} €</span>
+                {% else %}
+                    <span class="badge badge-pendiente">Pendiente</span>
+                    <span class="small">{{ cuota.importe }} €</span>
+                {% endif %}
+            </div>
+        {% empty %}
+            <div class="small">No hay cuotas.</div>
+        {% endfor %}
+    </div>
+
+    <!-- PAGOS -->
+    <div class="card">
+        <h2>💳 Pagos</h2>
+
+        {% for pago in pagos %}
+            <div class="item">
+                <strong>{{ pago.fecha|date:"d/m/Y" }}</strong><br>
+                <span class="small">
+                    {{ pago.cuota.nombre }} · {{ pago.get_metodo_display }}
+                </span><br>
+                <strong>{{ pago.importe }} €</strong>
+            </div>
+        {% empty %}
+            <div class="small">No hay pagos registrados.</div>
+        {% endfor %}
+    </div>
+
+</div>
+
+</body>
+</html>

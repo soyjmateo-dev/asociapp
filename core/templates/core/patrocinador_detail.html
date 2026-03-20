@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between mb-4">
+        <h3>{{ patrocinador.empresa }}</h3>
+
+        <div>
+            <a href="{% url 'patrocinador_update' slug=slug pk=patrocinador.id %}"
+               class="btn btn-outline-primary">
+                Editar
+            </a>
+
+            <a href="/{{ slug }}/patrocinadores/"
+               class="btn btn-outline-secondary">
+                Volver
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm p-4">
+
+        <p><strong>Contacto:</strong> {{ patrocinador.nombre_contacto }}</p>
+        <p><strong>Email:</strong> {{ patrocinador.email }}</p>
+        <p><strong>Teléfono:</strong> {{ patrocinador.telefono }}</p>
+        <p><strong>Actividad:</strong> {{ patrocinador.actividad.nombre }}</p>
+        <p><strong>Aportación:</strong> {{ patrocinador.aportacion }} €</p>
+        <p><strong>Año:</strong> {{ patrocinador.año }}</p>
+
+        {% if patrocinador.logotipo %}
+            <hr>
+            <p><strong>Logotipo:</strong></p>
+            <img src="{{ patrocinador.logotipo.url }}" 
+                 style="max-height:150px;">
+            <br><br>
+            <a href="{{ patrocinador.logotipo.url }}" 
+               class="btn btn-sm btn-outline-dark"
+               download>
+                Descargar logotipo
+            </a>
+        {% endif %}
+
+        <h6>Documento adicional:</h6>
+
+        {% if patrocinador.documento %}
+ 
+            <div class="d-flex align-items-center gap-2 mb-2">
+                <span class="badge bg-light text-dark border">
+                    {{ patrocinador.documento.name|cut:"patrocinadores/documentos/" }}
+                </span>
+
+                <a href="{{ patrocinador.documento.url }}"
+                    class="btn btn-sm btn-outline-dark"
+                    download>
+                    Descargar
+                </a>
+            </div>
+
+        {% else %}
+            <p class="text-muted">No hay documento adicional</p>
+        {% endif %}
+
+        {% if patrocinador.observaciones %}
+            <hr>
+            <p><strong>Observaciones:</strong></p>
+            <p>{{ patrocinador.observaciones }}</p>
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

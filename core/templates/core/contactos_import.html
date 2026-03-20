@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3>Importar contactos desde Excel</h3>
+
+<form method="post" enctype="multipart/form-data">
+
+    {% csrf_token %}
+
+    <div class="mb-3">
+        <input type="file" name="archivo" class="form-control">
+    </div>
+
+    <button class="btn btn-primary">
+        Importar
+    </button>
+
+</form>
+
+{% endblock %}

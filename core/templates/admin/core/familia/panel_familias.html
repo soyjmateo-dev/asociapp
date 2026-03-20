@@ -1,0 +1,30 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<h1>👨‍👩‍👧‍👦 Familias</h1>
+
+<table class="adminlist">
+    <thead>
+        <tr>
+            <th>Familia</th>
+            <th>Socios</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for familia in familias %}
+        <tr>
+            <td>{{ familia.nombre }}</td>
+            <td>{{ familia.total_socios }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2">No hay familias</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<p style="margin-top:20px;">
+    <a href="../" class="button">← Volver a socios</a>
+</p>
+{% endblock %}

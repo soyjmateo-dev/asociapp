@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}Actividades{% endblock %}
+
+{% block content %}
+
+<!-- CABECERA -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+
+    <div>
+        <h2 class="mb-0">Actividades</h2>
+        
+    </div>
+
+    <div class="d-flex gap-2">
+
+        <a href="/{{ slug }}/" class="btn btn-outline-secondary">
+            ← Volver al panel
+        </a>
+
+        <a href="/{{ slug }}/actividades/nueva/" class="btn btn-primary">
+            + Nueva actividad
+        </a>
+
+    </div>
+
+</div>
+
+<!-- TABLA -->
+<div class="card shadow-sm">
+
+    <div class="card-body p-0">
+
+        {% if actividades %}
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle mb-0 table-striped">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th>Nombre</th>
+                        <th>Fecha</th>
+                        <th>Plazas</th>
+                        <th>Disponibles</th>
+                        <th>Precio Adulto</th>
+                        <th>Precio Menor</th>
+                        <th class="text-center">Acciones</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for actividad in actividades %}
+
+                    <tr>
+
+                        <td class="fw-semibold">
+
+                            <a href="/{{ slug }}/actividades/{{ actividad.id }}/"
+                               class="text-decoration-none text-dark">
+
+                                {{ actividad.nombre }}
+
+                            </a>
+
+                        </td>
+
+                        <td>
+                            {{ actividad.fecha }}
+                        </td>
+
+                        <td>
+                            {{ actividad.plazas_ocupadas }}/{{ actividad.cupo_maximo }}
+                        </td>
+
+                        <td>
+
+                            <span class="badge
+                                {% if actividad.plazas_disponibles <= 0 %}
+                                    bg-danger
+                                {% else %}
+                                    bg-success
+                                {% endif %}">
+
+                                {{ actividad.plazas_disponibles }}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            {% if actividad.coste_adulto %}
+                                {{ actividad.coste_adulto }} €
+                            {% else %}
+                                -
+                            {% endif %}
+
+                        </td>
+
+                        <td>
+
+                            {% if actividad.coste_menor %}
+                                {{ actividad.coste_menor }} €
+                            {% else %}
+                                -
+                            {% endif %}
+
+                        </td>
+
+                        <td class="text-center">
+
+                            {% if actividad.plazas_disponibles > 0 %}
+
+                                <a href="{% url 'inscripcion_create' slug=slug actividad_id=actividad.id %}"
+                                   class="btn btn-sm btn-outline-primary">
+
+                                    Inscribir
+
+                                </a>
+
+                            {% else %}
+
+                                <span class="badge bg-danger">
+                                    COMPLETA
+                                </span>
+
+                            {% endif %}
+
+                            <a href="{% url 'actividad_update' slug=slug pk=actividad.id %}"
+                               class="btn btn-sm btn-outline-secondary">
+
+                                ✏️
+
+                            </a>
+
+                            <a href="{% url 'actividad_delete' slug=slug pk=actividad.id %}"
+                               class="btn btn-sm btn-outline-danger"
+                               onclick="return confirm('¿Seguro que quieres eliminar esta actividad?');">
+
+                                🗑
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+            <div class="text-center text-muted py-5">
+                No hay actividades creadas todavía.
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

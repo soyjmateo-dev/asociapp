@@ -1,0 +1,88 @@
+{% extends "admin/change_list.html" %}
+
+{% block object-tools %}
+<ul class="object-tools">
+    <li>
+        <a href="add/" class="addlink">
+            ➕ Añadir gasto
+        </a>
+    </li>
+</ul>
+{% endblock %}
+
+{% block content %}
+
+<style>
+  .resumen-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin: 25px 0 35px 0;
+  }
+
+  .resumen-card {
+    min-width: 320px;
+    padding: 34px 38px;
+    border-radius: 14px;
+    text-align: center;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    border-top: 6px solid transparent;
+  }
+
+  .resumen-card h3 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1f2937;
+  }
+
+  .resumen-card .numero {
+    margin-top: 18px;
+    font-size: 66px;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  /* VERDE */
+  .card-green {
+    background-color: #ecfdf5;
+    border-top-color: #16a34a;
+  }
+
+  .card-green .numero {
+    color: #166534;
+  }
+
+  /* ROJO */
+  .card-red {
+    background-color: #fef2f2;
+    border-top-color: #dc2626;
+  }
+
+  .card-red .numero {
+    color: #991b1b;
+  }
+
+  /* INFO */
+  .card-info {
+    background-color: #fff7ed;
+    border-top-color: #f97316;
+  }
+
+  .card-info .numero {
+    color: #c2410c;
+  }
+</style>
+
+{% include "admin/core/_dashboard.html" with cards=cards %}
+
+{{ block.super }}
+
+{% endblock %}
+
+{% block pagination %}
+{% endblock %}
+
+{% block content_title %}
+<h1>{{ cl.opts.verbose_name_plural|capfirst }}</h1>
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Contactos{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Contactos</h2>
+
+    <div>
+        <a href="/{{ slug }}/" class="btn btn-outline-secondary me-2">
+            ← Volver al panel
+        </a>
+        <a href="{% url 'excel_export' slug 'Contacto' %}" class="btn btn-success me-2">
+            Exportar Excel
+        </a>
+        <a href="{% url 'contacto_create' slug=slug %}" class="btn btn-primary">
+            + Nuevo contacto
+        </a>
+
+    </div>
+</div>
+
+
+<form method="get" class="row g-2 mb-3">
+
+    <div class="col-md-6">
+        <input type="text"
+               name="q"
+               class="form-control"
+               placeholder="Buscar nombre, empresa..."
+               value="{{ request.GET.q }}">
+    </div>
+
+    <div class="col-md-3">
+
+        <select name="tipo" class="form-select">
+
+            <option value="">Todos los tipos</option>
+
+            {% for t in tipos %}
+            <option value="{{ t.id }}"
+                {% if request.GET.tipo == t.id|stringformat:"s" %}selected{% endif %}>
+                {{ t.nombre }}
+            </option>
+            {% endfor %}
+
+        </select>
+
+    </div>
+
+    <div class="col-md-3">
+        <button class="btn btn-outline-primary w-100">
+            🔎 Buscar
+        </button>
+    </div>
+
+</form>
+
+
+<div class="card shadow-sm">
+
+<div class="table-responsive">
+
+<table class="table table-striped align-middle mb-0 table-hover">
+
+<thead class="table-light">
+<tr>
+<th>Nombre</th>
+<th>Empresa</th>
+<th>Tipo</th>
+<th>Teléfono</th>
+<th>Email</th>
+<th style="width:120px;" class="text-center">Acciones</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for c in contactos %}
+
+<tr>
+
+<td>
+<a href="{% url 'contacto_detail' slug=slug pk=c.id %}"
+   class="fw-semibold text-decoration-none">
+    {{ c.nombre }} {{ c.apellidos }}
+</a>
+</td>
+
+<td>
+{{ c.empresa|default:"—" }}
+</td>
+
+<td>
+{{ c.tipo }}
+</td>
+
+<td>
+{{ c.telefono|default:"—" }}
+</td>
+
+<td>
+{{ c.email|default:"—" }}
+</td>
+
+<td class="text-center">
+
+<a href="{% url 'contacto_detail' slug=slug pk=c.id %}"
+   class="btn btn-sm btn-outline-secondary">
+    👁
+</a>
+
+<a href="{% url 'contacto_update' slug=slug pk=c.id %}"
+   class="btn btn-sm btn-outline-primary">
+    ✏️
+</a>
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="6" class="text-center text-muted py-4">
+No hay contactos registrados
+</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,265 @@
+{% extends "base.html" %}
+
+{% block title %}Registrar pago{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Registrar pago</h2>
+    <a href="{% url 'pagos_list' slug=slug %}" class="btn btn-outline-secondary">
+        ← Volver a pagos
+    </a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body">
+
+        {% if form.errors %}
+        <div class="alert alert-danger">
+            <strong>Errores:</strong>
+            {{ form.errors }}
+        </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'pago_create' slug=slug %}">
+            {% csrf_token %}
+
+            <!-- ================== BLOQUE TIPO DE PAGO ================== -->
+            <div class="bg-light rounded p-3 mb-4">
+                <h5 class="mb-3">1️⃣ Tipo de pago</h5>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Cuota</label>
+                        {{ form.cuota }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Actividad</label>
+                        {{ form.actividad }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================== BLOQUE DESTINATARIO ================== -->
+            <div class="bg-light rounded p-3 mb-4">
+                <h5 class="mb-3">2️⃣ ¿Quién paga?</h5>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Socio</label>
+                        {{ form.socio }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Familia</label>
+                        {{ form.familia }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================== BLOQUE DETALLE ================== -->
+            <div class="bg-light rounded p-3">
+                <h5 class="mb-3">3️⃣ Detalle del pago</h5>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Método de pago</label>
+                        {{ form.metodo }}
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Importe (€)</label>
+                        {{ form.importe }}
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">Observaciones</label>
+                        {{ form.observaciones }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex justify-content-end gap-2">
+                <a href="{% url 'pagos_list' slug=slug %}" class="btn btn-secondary">
+                    Cancelar
+                </a>
+                <button type="submit" class="btn btn-secondary" id="btnRegistrar" disabled>
+                    💰 Registrar pago
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+
+<!-- ================== SCRIPT UNIFICADO ================== -->
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    const cuota = document.getElementById("id_cuota");
+    const actividad = document.getElementById("id_actividad");
+    const socio = document.getElementById("id_socio");
+    const familia = document.getElementById("id_familia");
+    const importe = document.getElementById("id_importe");
+
+    const btnRegistrar = document.getElementById("btnRegistrar");
+
+    function validarFormulario() {
+
+        const hayCuota = cuota.value !== "";
+        const hayActividad = actividad.value !== "";
+
+        const haySocio = socio.value !== "";
+        const hayFamilia = familia.value !== "";
+
+        const importeValido = importe.value && parseFloat(importe.value) > 0;
+
+        const tipoValido = hayCuota || hayActividad;
+        const destinatarioValido = haySocio || hayFamilia;
+
+        if (tipoValido && destinatarioValido && importeValido) {
+            btnRegistrar.disabled = false;
+            btnRegistrar.classList.remove("btn-secondary");
+            btnRegistrar.classList.add("btn-success");
+        } else {
+            btnRegistrar.disabled = true;
+            btnRegistrar.classList.remove("btn-success");
+            btnRegistrar.classList.add("btn-secondary");
+        }
+    }
+    
+    if (!cuota || !actividad || !socio || !familia) return;
+
+    // ---------- ESTADO INICIAL ----------
+    resetTodo();
+
+    function resetTodo() {
+        socio.innerHTML = '<option value="">---------</option>';
+        familia.innerHTML = '<option value="">---------</option>';
+        socio.disabled = true;
+        familia.disabled = true;
+    }
+
+    // ---------- ACTUALIZAR IMPORTE ----------
+    function actualizarImporte() {
+
+        let url = "/{{ slug }}/ajax/importe/?";
+
+        if (cuota.value && socio.value) {
+            url += `cuota=${cuota.value}&socio=${socio.value}`;
+        }
+
+        if (cuota.value && familia.value) {
+            url += `cuota=${cuota.value}&familia=${familia.value}`;
+        }
+
+        if (actividad.value && socio.value) {
+            url += `actividad=${actividad.value}&socio=${socio.value}`;
+        }
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (importe && data.importe !== undefined) {
+                    importe.value = data.importe;
+                }
+                validarFormulario();
+            });
+    }
+
+    // ---------- CUOTA ----------
+    cuota.addEventListener("change", function() {
+
+        if (!this.value) {
+            actividad.disabled = false;
+            resetTodo();
+            return;
+        }
+
+        actividad.value = "";
+        actividad.disabled = true;
+
+        fetch("{% url 'socios_cuota' slug=slug %}?cuota=" + this.value)
+            .then(r => r.json())
+            .then(data => {
+
+                let sociosOptions = '<option value="">---------</option>';
+                data.socios.forEach(s => {
+                    sociosOptions += `<option value="${s.id}">${s.nombre}</option>`;
+                });
+
+                socio.innerHTML = sociosOptions;
+                socio.disabled = false;
+
+                let familiaOptions = '<option value="">---------</option>';
+                data.familias.forEach(f => {
+                    familiaOptions += `<option value="${f.id}">${f.nombre}</option>`;
+                });
+
+                familia.innerHTML = familiaOptions;
+                familia.disabled = false;
+            });
+    });
+
+    // ---------- ACTIVIDAD ----------
+    actividad.addEventListener("change", function() {
+
+        if (!this.value) {
+            cuota.disabled = false;
+            resetTodo();
+            return;
+        }
+
+        cuota.value = "";
+        cuota.disabled = true;
+
+        fetch("{% url 'socios_actividad' slug=slug %}?actividad=" + this.value)
+            .then(r => r.json())
+            .then(data => {
+
+                let options = '<option value="">---------</option>';
+                data.socios.forEach(s => {
+                    options += `<option value="${s.id}">${s.nombre}</option>`;
+                });
+
+                socio.innerHTML = options;
+            });
+    });
+
+    socio.addEventListener("change", function() {
+        if (this.value) {
+            familia.value = "";
+            familia.disabled = true;
+        } else {
+            familia.disabled = false;
+        }
+    });
+
+    familia.addEventListener("change", function() {
+        if (this.value) {
+            socio.value = "";
+            socio.disabled = true;
+        } else {
+            socio.disabled = false;
+        }
+    });
+
+    // ---------- LISTENERS IMPORTE ----------
+    socio.addEventListener("change", actualizarImporte);
+    familia.addEventListener("change", actualizarImporte);
+    actividad.addEventListener("change", actualizarImporte);
+    cuota.addEventListener("change", actualizarImporte);
+
+    socio.addEventListener("change", validarFormulario);
+    familia.addEventListener("change", validarFormulario);
+    actividad.addEventListener("change", validarFormulario);
+    cuota.addEventListener("change", validarFormulario);
+    importe.addEventListener("input", validarFormulario);
+});
+</script>
+
+{% endblock %}
